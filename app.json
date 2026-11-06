@@ -1,0 +1,68 @@
+{
+  "id": "dpf_id7",
+  "title": "Particulate filter",
+  "description": "Diesel particulate filter in the iDrive 7 look: soot and ash load, regenerations (live, interrupted, history), differential pressure and exhaust temperatures from the diesel engine unit (DDE), read-only",
+  "version": "0.1.0",
+  "vendor": "custom",
+  "loggingId": "OAB2",
+  "iconGlyph": "DPF",
+  "signals": {
+    "com.harman.infotainment.systemfunctions.tasu.tasu.InternalTasu": {
+      "_instances": "SystemFunctionsInternalTasuInst1",
+      "_methods": ["sendTasuRequest"],
+      "_broadcasts": ["sendTasuResponse"]
+    }
+  },
+  "screens": [
+    {
+      "name": "MAIN",
+      "kind": "canvas",
+      "title": "Particulate filter",
+      "buttons": [
+        ["BTN_OVERVIEW", "Overview"],
+        ["BTN_LIVE", "Live data"],
+        ["BTN_HISTORY", "History"],
+        ["BTN_SETTINGS", "Settings"]
+      ]
+    }
+  ],
+  "settings": [
+    {"key": "sootMax", "label": "Regeneration starts at", "type": "number", "unit": "g", "default": 0,
+     "labels": {"0": "Auto (learned)"},
+     "steps": [0, 15, 18, 20, 22, 24, 26, 28, 30, 35, 40]},
+    {"key": "rate", "label": "Read the engine unit every", "type": "number", "unit": "s", "default": 2,
+     "steps": [1, 2, 5, 10]},
+    {"key": "raw", "label": "Live data: show raw replies", "type": "bool", "default": false},
+    {"key": "tempUnit", "label": "Temperature unit", "type": "choice", "default": "c",
+     "options": [["c", "Celsius"], ["f", "Fahrenheit"]]},
+    {"key": "accent", "label": "Highlight colour", "type": "choice", "default": "red",
+     "options": [["red", "Red"], ["blue", "Blue"], ["orange", "Orange"]]},
+    {"key": "layout", "label": "Screen layout", "type": "choice", "default": "standard",
+     "options": [["standard", "iDrive (title and buttons by the HMI)"], ["full", "Full screen"]]},
+    {"key": "renderer", "label": "Renderer", "type": "choice", "default": "auto",
+     "options": [["auto", "GPU 60 fps (default)"], ["software", "Software"]]},
+    {"key": "demo", "label": "Demo data", "type": "choice", "default": "auto",
+     "options": [["auto", "Auto"], ["on", "Always"], ["off", "Never"]]}
+  ],
+  "config": {
+    "comment": "Diesel engine unit (DDE, ecu 18 = 0x12), UDS 0x22 ReadDataByIdentifier only. Identifiers from the public EdiabasX SGBD reference: D83BX7C0 (DDE 8.3, B37 / B47 / B57 in the G series) and D75BX7A0 list the same ones for the DPF. value = raw * factor + offset; bytes = big-endian length; candidates are tried in order, the first plausible one wins. If a value says 'not available on this car', look up your DDE's SGBD (Live Data > Units shows its index) and put its DID here.",
+    "dpf": {
+      "ecu": 18,
+      "soot":        [{"did": "44BE", "bytes": 2, "factor": 0.01525902, "min": 0, "max": 200}],
+      "sootSim":     [{"did": "44C1", "bytes": 2, "factor": 0.01, "min": 0, "max": 200}],
+      "ash":         [{"did": "44BD", "bytes": 2, "factor": 0.01525902, "min": 0, "max": 500}],
+      "distSince":   [{"did": "44BF", "bytes": 4, "factor": 0.001, "min": 0, "max": 100000}],
+      "avgInterval": [{"did": "44C7", "bytes": 2, "factor": 1, "min": 0, "max": 20000}],
+      "fuelSince":   [{"did": "44BC", "bytes": 2, "factor": 0.01, "min": 0, "max": 655}],
+      "regenReq":    [{"did": "44BB", "bytes": 1, "factor": 1, "min": 0, "max": 255}],
+      "interrupted": [{"did": "44C0", "bytes": 2, "factor": 1, "min": 0, "max": 65535}],
+      "lock":        [{"did": "44C2", "bytes": 1, "factor": 1, "min": 0, "max": 255}],
+      "dp":          [{"did": "44F8", "bytes": 2, "factor": 0.04577707, "offset": -1000, "min": -200, "max": 2000}],
+      "tDpf":        [{"did": "434A", "bytes": 2, "factor": 0.1, "offset": -3276.7, "min": -50, "max": 1100}],
+      "tOxi":        [{"did": "4347", "bytes": 2, "factor": 0.1, "offset": -3276.7, "min": -50, "max": 1100}],
+      "flowRes":     [{"did": "44C5", "bytes": 2, "factor": 0.0001, "min": 0, "max": 6.5535}],
+      "timeSince":   [{"did": "44B7", "bytes": 4, "factor": 1, "min": 0, "max": 100000000}],
+      "history": ["44D1", "44D2", "44D3", "44D4", "44D5"]
+    }
+  }
+}
