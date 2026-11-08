@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "components": [
+    {
+      "id": "bmw_dpf_rb",
+      "kind": "app",
+      "path": "apps/bmw_dpf_rb",
+      "build": "unit",
+      "mguHmi": ["ID7"]
+    }
+  ]
+}
